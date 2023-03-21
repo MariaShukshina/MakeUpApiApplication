@@ -12,6 +12,7 @@ import java.io.InputStreamReader
 
 object Constants {
     private var brandList: ArrayList<Brand> = ArrayList()
+    const val BASE_URL = "http://makeup-api.herokuapp.com/api/v1/products.json"
 
     fun getBrandList(context: Context): ArrayList<Brand> {
         if (brandList.isEmpty()) {
