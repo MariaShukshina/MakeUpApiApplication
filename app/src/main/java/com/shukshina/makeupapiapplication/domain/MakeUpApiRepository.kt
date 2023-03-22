@@ -5,7 +5,8 @@ import com.shukshina.makeupapiapplication.response.ProductsListItem
 import retrofit2.Call
 
 interface MakeUpApiRepository {
-    suspend fun getAllProducts(): Call<ProductsList>
-    suspend fun getProductsByBrand(brand: String): Call<ProductsList>
-    suspend fun getProductByBrandAndProductType(brand: String, productType: String): Call<ProductsList>
+    fun getAllProducts(): Call<ProductsList>
+    fun getProductsByBrand(brand: String): Call<ProductsList>
+    fun getProductByBrandAndProductType(brand: String, productType: String): Call<ProductsList>
+    fun getProductById(productId: String): Call<ProductsListItem>
 }

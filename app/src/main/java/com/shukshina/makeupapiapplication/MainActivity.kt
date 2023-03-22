@@ -12,10 +12,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.shukshina.makeupapiapplication.ui.theme.MakeUpApiApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /*val viewModel: MainActivityViewModel by viewModels()
+
+        viewModel.getProductByBrandAndProductType("MAYBELLINE", "bronzer")
+        viewModel.productsByBrandAndProductTypeList.observe(this){
+            Log.i("MainActivity", "productList: $it")
+        }*/
+
 
         setContent {
             MakeUpApiApplicationTheme {
