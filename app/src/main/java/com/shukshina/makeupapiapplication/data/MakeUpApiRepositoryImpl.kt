@@ -16,6 +16,10 @@ class MakeUpApiRepositoryImpl @Inject constructor(private val api: MakeUpApi): M
         return api.getProductsByBrand(brand)
     }
 
+    override fun getProductsByProductType(productType: String): Call<ProductsList> {
+        return api.getProductsByProductType(productType)
+    }
+
     override fun getProductByBrandAndProductType(brand: String, productType: String): Call<ProductsList> {
         return api.getProductByBrandAndProductType(brand, productType)
     }

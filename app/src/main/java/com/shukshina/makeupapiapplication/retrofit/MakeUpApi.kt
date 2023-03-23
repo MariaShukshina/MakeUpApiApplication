@@ -16,6 +16,9 @@ interface MakeUpApi {
     fun getProductsByBrand(@Query("brand") brand: String): Call<ProductsList>
 
     @GET("products.json")
+    fun getProductsByProductType(@Query("product_type") brand: String): Call<ProductsList>
+
+    @GET("products.json")
     fun getProductByBrandAndProductType(
         @Query("brand") brand: String,
         @Query("product_type") productType: String

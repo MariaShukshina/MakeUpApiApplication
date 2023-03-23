@@ -20,6 +20,8 @@ class MainActivityViewModel @Inject constructor(private val repository: MakeUpAp
     val allProductsList = _allProductsList
     private val _productsByBrandList = MutableLiveData<ProductsList>()
     val productsByBrandList = _productsByBrandList
+    private val _productsByProductTypeList = MutableLiveData<ProductsList>()
+    val productsByProductTypeList = _productsByProductTypeList
     private val _productsByBrandAndProductTypeList = MutableLiveData<ProductsList>()
     val productsByBrandAndProductTypeList = _productsByBrandAndProductTypeList
     private val _productById = MutableLiveData<ProductsListItem>()
@@ -79,6 +81,21 @@ class MainActivityViewModel @Inject constructor(private val repository: MakeUpAp
                 }
 
                 override fun onFailure(call: Call<ProductsListItem>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+        }
+    }
+
+    fun getProductsByProductType(productType: String) {
+        viewModelScope.launch {
+            val call: Call<ProductsList> = repository.getProductsByProductType(productType)
+            call.enqueue(object: Callback<ProductsList>{
+                override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
+                    _productsByProductTypeList.postValue(response.body()!!)
+                }
+
+                override fun onFailure(call: Call<ProductsList>, t: Throwable) {
                     t.printStackTrace()
                 }
             })
