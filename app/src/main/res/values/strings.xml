@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MakeUpApiApplication</string>
+    <string name="product_image">Product image</string>
 </resources>
