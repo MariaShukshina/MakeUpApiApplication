@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,17 +53,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /*     val viewModel: MainActivityViewModel by viewModels()
-
-             viewModel.getProductsByProductType("lipstick")
-             viewModel.productsByProductTypeList.observe(this) {
-                 Log.i("MainActivity", "productList: $it")
-             }*/
-
-        //if(!productsList.isNullOrEmpty()) {
-        //    productsList?.filter { it.name!!.contains(query) }
-        //}
 
         setContent {
             MakeUpApiApplicationTheme {
@@ -122,7 +110,7 @@ fun Navigation(navController: NavHostController) {
 @Composable
 fun ProductsListSection(
     navController: NavHostController,
-    productList: ProductsList = ProductsList()
+    productList: List<ProductsListItem>
 ) {
     LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
         items(productList) {
@@ -185,20 +173,19 @@ fun BrandsScreen() {
 fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
-    onSearch: (String) -> Unit = {}
+    searchQuery: MutableState<String>
 ) {
-    var text by rememberSaveable {
+    /*var text by rememberSaveable {
         mutableStateOf("")
-    }
+    }*/
     var isHintDisplayed by remember {
         mutableStateOf(hint != "")
     }
     Box(modifier = modifier) {
         BasicTextField(
-            value = text,
+            value = searchQuery.value,
             onValueChange = {
-                text = it
-                onSearch(text)
+                searchQuery.value = it
             },
             maxLines = 1,
             singleLine = true,
@@ -209,7 +196,7 @@ fun SearchBar(
                 .background(Color.White, CircleShape)
                 .padding(horizontal = 20.dp, vertical = 12.dp)
                 .onFocusChanged {
-                    isHintDisplayed = it.isFocused == false && text.isEmpty()
+                    isHintDisplayed = it.isFocused == false && searchQuery.value.isEmpty()
                 }
         )
         if (isHintDisplayed) {
@@ -240,7 +227,7 @@ fun ProductItem(
                 //TODO: navigate to product details screen
             }
     ) {
-        Log.e("ImageRequest", "image url: ${productsListItem.image_link}")
+        Log.i("ImageRequest", "image url: ${productsListItem.image_link}")
         AsyncImage(
             alignment = Alignment.Center,
             placeholder = painterResource(id = R.drawable.ic_placeholder),

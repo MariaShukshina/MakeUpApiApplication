@@ -15,45 +15,60 @@ import androidx.navigation.NavHostController
 import com.shukshina.makeupapiapplication.MainActivityViewModel
 import com.shukshina.makeupapiapplication.ProductsListSection
 import com.shukshina.makeupapiapplication.SearchBar
+import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.utils.Constants
 
 @Composable
 fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel()) {
+    val searchQuery = remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        AllProductsTopSection(viewModel)
+        AllProductsTopSection(searchQuery)
         val productsList by viewModel.productsByBrandAndProductTypeList.observeAsState()
 
-        productsList?.let { ProductsListSection(navController, it) }
-
         LaunchedEffect(productsList) {
-            if(productsList.isNullOrEmpty()) {
+            if (productsList.isNullOrEmpty()) {
                 viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
             }
+        }
+        productsList?.let { list ->
+            val searchedText = searchQuery.value
+            val filteredProducts = if (searchedText.isEmpty()) {
+                list
+            } else {
+                val resultList = ProductsList()
+                if (!productsList.isNullOrEmpty()) {
+                    for (item in list){
+                        if (item.name!!.startsWith(searchedText, ignoreCase = true)
+                            || item.brand!!.startsWith(searchedText, ignoreCase = true)){
+                            resultList.add(item)
+                        }
+                    }
+                }
+                resultList
+            }
+            ProductsListSection(navController, filteredProducts)
         }
 
     }
 }
 
 @Composable
-fun AllProductsTopSection(viewModel: MainActivityViewModel) {
+fun AllProductsTopSection(searchQuery: MutableState<String>) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(Constants.productTypes[0]) }
 
     Row {
-        val productsList by viewModel.allProductsList.observeAsState()
         SearchBar(
-            hint = "Search", modifier = Modifier
+            hint = "Search",
+            modifier = Modifier
                 .fillMaxWidth(0.8f)
-                .padding(10.dp)
-        ) { query ->
-            if(!productsList.isNullOrEmpty()) {
-                productsList?.filter { it.name!!.contains(query) }
-            }
-        }
+                .padding(10.dp),
+            searchQuery = searchQuery,
+        )
         Spacer(modifier = Modifier.width(10.dp))
 
         Box(
