@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -26,8 +27,11 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        AllProductsTopSection(searchQuery)
+
         val productsList by viewModel.productsByBrandAndProductTypeList.observeAsState()
+        AllProductsTopSection(searchQuery) {
+            viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
+        }
 
         LaunchedEffect(productsList) {
             if (productsList.isNullOrEmpty()) {
@@ -41,9 +45,11 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
             } else {
                 val resultList = ProductsList()
                 if (!productsList.isNullOrEmpty()) {
-                    for (item in list){
-                        if (item.name!!.startsWith(searchedText, ignoreCase = true)
-                            || item.brand!!.startsWith(searchedText, ignoreCase = true)){
+                    for (item in list) {
+                        if (item.name!!.contains(searchedText, ignoreCase = true)
+                            || item.brand!!.contains(searchedText, ignoreCase = true)
+                            || item.category!!.contains(searchedText, ignoreCase = true)
+                        ) {
                             resultList.add(item)
                         }
                     }
@@ -57,19 +63,30 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
 }
 
 @Composable
-fun AllProductsTopSection(searchQuery: MutableState<String>) {
+fun AllProductsTopSection(searchQuery: MutableState<String>, onClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(Constants.productTypes[0]) }
 
     Row {
         SearchBar(
-            hint = "Search",
+            hint = "Search by name, brand or category",
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .padding(10.dp),
             searchQuery = searchQuery,
         )
-        Spacer(modifier = Modifier.width(10.dp))
+        Spacer(modifier = Modifier.width(4.dp))
+
+        IconButton(
+            onClick = {
+                onClick.invoke()
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+        ) {
+            Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+        }
+        Spacer(modifier = Modifier.width(4.dp))
 
         Box(
             modifier = Modifier
