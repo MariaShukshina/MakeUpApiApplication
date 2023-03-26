@@ -30,7 +30,7 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
 
 
         AllProductsTopSection(searchQuery) {
-            viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
+            viewModel.getAllProducts()
         }
         productsList?.let { list ->
             val searchedText = searchQuery.value
@@ -40,9 +40,9 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
                 val resultList = ProductsList()
                 if (!productsList.isEmpty()) {
                     for (item in list) {
-                        if (item.name!!.contains(searchedText, ignoreCase = true)
-                            || item.brand!!.contains(searchedText, ignoreCase = true)
-                            || item.category!!.contains(searchedText, ignoreCase = true)
+                        if (item.name?.contains(searchedText, ignoreCase = true) == true
+                            || item.brand?.contains(searchedText, ignoreCase = true) == true
+                            || item.category?.contains(searchedText, ignoreCase = true) == true
                         ) {
                             resultList.add(item)
                         }

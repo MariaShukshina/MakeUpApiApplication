@@ -32,10 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.response.ProductsListItem
 import com.shukshina.makeupapiapplication.ui.AllProductsScreen
 import com.shukshina.makeupapiapplication.ui.SplashScreen
@@ -53,23 +57,30 @@ class MainActivity : ComponentActivity() {
             MakeUpApiApplicationTheme {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
-                val productsList by viewModel.productsByBrandAndProductTypeList.observeAsState()
+                val productsList by viewModel.allProductsList.observeAsState()
 
-                LaunchedEffect(productsList) {
-                    viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
+                LaunchedEffect(true) {
+                    viewModel.getAllProducts()
                 }
                 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
-                    when {
-                        productsList.isNullOrEmpty() -> {
-                            SplashScreen(navController)
-                        }
-                        else -> {
-                            AllProductsScreen(navController, viewModel, productsList)
-                        }
-                    }
+                    Navigation(navController = navController, viewModel = viewModel, productsList = productsList)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun Navigation(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel(), productsList: ProductsList?) {
+    NavHost(navController = navController, startDestination = "splash_screen") {
+
+        composable("splash_screen") {
+            SplashScreen(navController = navController, viewModel = viewModel)
+        }
+
+        composable("all_products_screen") {
+            AllProductsScreen(navController = navController, viewModel = viewModel, productsList = productsList)
         }
     }
 }
