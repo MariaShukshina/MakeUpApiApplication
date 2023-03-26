@@ -3,6 +3,7 @@ package com.shukshina.makeupapiapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +38,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.shukshina.makeupapiapplication.response.ProductsListItem
 import com.shukshina.makeupapiapplication.ui.AllProductsScreen
+import com.shukshina.makeupapiapplication.ui.SplashScreen
 import com.shukshina.makeupapiapplication.ui.theme.MakeUpApiApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -48,10 +51,23 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MakeUpApiApplicationTheme {
+                val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
+                val productsList by viewModel.productsByBrandAndProductTypeList.observeAsState()
+
+                LaunchedEffect(productsList) {
+                    viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
+                }
                 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
-                    AllProductsScreen(navController)
+                    when {
+                        productsList.isNullOrEmpty() -> {
+                            SplashScreen(navController)
+                        }
+                        else -> {
+                            AllProductsScreen(navController, viewModel, productsList)
+                        }
+                    }
                 }
             }
         }

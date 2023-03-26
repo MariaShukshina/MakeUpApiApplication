@@ -6,7 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
@@ -20,7 +19,8 @@ import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.utils.Constants
 
 @Composable
-fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel()) {
+fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel(),
+                      productsList: ProductsList?) {
     val searchQuery = remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -28,15 +28,9 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
             .padding(10.dp)
     ) {
 
-        val productsList by viewModel.productsByBrandAndProductTypeList.observeAsState()
+
         AllProductsTopSection(searchQuery) {
             viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
-        }
-
-        LaunchedEffect(productsList) {
-            if (productsList.isNullOrEmpty()) {
-                viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
-            }
         }
         productsList?.let { list ->
             val searchedText = searchQuery.value
@@ -44,7 +38,7 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
                 list
             } else {
                 val resultList = ProductsList()
-                if (!productsList.isNullOrEmpty()) {
+                if (!productsList.isEmpty()) {
                     for (item in list) {
                         if (item.name!!.contains(searchedText, ignoreCase = true)
                             || item.brand!!.contains(searchedText, ignoreCase = true)
