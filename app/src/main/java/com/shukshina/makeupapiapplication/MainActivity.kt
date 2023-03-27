@@ -24,11 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,10 +59,10 @@ class MainActivity : ComponentActivity() {
             MakeUpApiApplicationTheme {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
-                val productsList by viewModel.allProductsList.observeAsState()
+                val productsList by viewModel.productsByProductTypeList.observeAsState()
 
-                LaunchedEffect(true) {
-                    viewModel.getAllProducts()
+                LaunchedEffect(key1 = true) {
+                    viewModel.getProductsByProductType("lipstick")
                 }
                 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
@@ -148,33 +150,35 @@ fun ProductItem(
     modifier: Modifier = Modifier,
     productsListItem: ProductsListItem
 ) {
-    Box(modifier = modifier
+    Box(modifier = modifier.wrapContentHeight(align = Alignment.Top)
         .padding(3.dp)
         .shadow(0.dp, RoundedCornerShape(6.dp))
         .clip(RoundedCornerShape(6.dp))
         .background(Color.White)
-        .aspectRatio(0.8f)
         .clickable {
             //TODO: navigate to product details screen
-        }
+        }.height(intrinsicSize = IntrinsicSize.Max)
     ) {
         //Log.i("ImageRequest", "image url: ${productsListItem.image_link}")
 
-        Column(verticalArrangement = Arrangement.Center,
+        Column(verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
 
-            AsyncImage(
-                alignment = Alignment.Center,
+            AsyncImage(modifier = Modifier.size(150.dp).padding(1.dp),
+                alignment = Alignment.TopCenter,
                 placeholder = painterResource(id = R.drawable.ic_placeholder),
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(productsListItem.image_link)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
-                error = painterResource(id = R.drawable.ic_placeholder)
+                error = painterResource(id = R.drawable.ic_placeholder),
+                contentScale = ContentScale.Crop
             )
 
-            Column(modifier = Modifier.background(Color(192, 192, 192, 120))) {
+            Column(modifier = Modifier
+                .background(Color(192, 192, 192, 120))
+                .padding(bottom = 2.dp)) {
                 Text(
                     text = productsListItem.name ?: "",
                     fontSize = 14.sp,
@@ -183,7 +187,9 @@ fun ProductItem(
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp)
+                        .padding(horizontal = 5.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = productsListItem.category?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT)
@@ -193,7 +199,9 @@ fun ProductItem(
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp)
+                        .padding(horizontal = 5.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = productsListItem.brand?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT)
@@ -203,7 +211,9 @@ fun ProductItem(
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp)
+                        .padding(horizontal = 5.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = if(productsListItem.price != null) "$${productsListItem.price}" else "",
@@ -212,12 +222,13 @@ fun ProductItem(
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 5.dp)
+                        .padding(horizontal = 5.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
