@@ -19,7 +19,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(@ApplicationContext context: Context, private val repository: MakeUpApiRepository): ViewModel() {
+class MainActivityViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    private val repository: MakeUpApiRepository
+) : ViewModel() {
 
     private val _allProductsList = MutableLiveData<ProductsList>()
     val allProductsList = _allProductsList
@@ -56,9 +59,13 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
     fun getAllProducts() {
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getAllProducts()
-            call.enqueue(object: Callback<ProductsList>{
+            call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
-                        _allProductsList.postValue(response.body()!!)
+                    if (response.body() == null) {
+                        _allProductsList.postValue(ProductsList())
+                        return
+                    }
+                    _allProductsList.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
@@ -71,9 +78,13 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
     fun getProductsByBrand(brand: String) {
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getProductsByBrand(brand)
-            call.enqueue(object: Callback<ProductsList>{
+            call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
-                    _productsByBrandList.postValue(response.body()!!)
+                    if (response.body() == null) {
+                        _productsByBrandList.postValue(ProductsList())
+                        return
+                    }
+                    _productsByBrandList.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
@@ -86,8 +97,12 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
     fun getProductByBrandAndProductType(brand: String, productType: String) {
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getProductByBrandAndProductType(brand, productType)
-            call.enqueue(object: Callback<ProductsList>{
+            call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
+                    if (response.body() == null) {
+                        _productsByBrandAndProductTypeList.postValue(ProductsList())
+                        return
+                    }
                     _productsByBrandAndProductTypeList.postValue(response.body()!!)
                 }
 
@@ -101,9 +116,13 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
     fun getProductById(productId: String) {
         viewModelScope.launch {
             val call: Call<ProductsListItem> = repository.getProductById(productId)
-            call.enqueue(object: Callback<ProductsListItem>{
+            call.enqueue(object : Callback<ProductsListItem> {
                 override fun onResponse(call: Call<ProductsListItem>, response: Response<ProductsListItem>) {
-                    _productById.postValue(response.body()!!)
+                    if (response.body() == null) {
+                        _productById.postValue(null)
+                        return
+                    }
+                    _productById.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<ProductsListItem>, t: Throwable) {
@@ -116,9 +135,13 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
     fun getProductsByProductType(productType: String) {
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getProductsByProductType(productType)
-            call.enqueue(object: Callback<ProductsList>{
+            call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
-                    _productsByProductTypeList.postValue(response.body()!!)
+                    if (response.body() == null) {
+                        _productsByProductTypeList.postValue(ProductsList())
+                        return
+                    }
+                    _productsByProductTypeList.postValue(response.body())
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
@@ -127,5 +150,4 @@ class MainActivityViewModel @Inject constructor(@ApplicationContext context: Con
             })
         }
     }
-
 }
