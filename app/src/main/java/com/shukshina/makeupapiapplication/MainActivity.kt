@@ -47,6 +47,7 @@ import com.shukshina.makeupapiapplication.ui.AllProductsScreen
 import com.shukshina.makeupapiapplication.ui.SplashScreen
 import com.shukshina.makeupapiapplication.ui.theme.MakeUpApiApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.StateFlow
 import java.util.*
 
 
@@ -60,13 +61,22 @@ class MainActivity : ComponentActivity() {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
                 val productsList by viewModel.productsByProductTypeList.observeAsState()
+                val internetConnectionState: StateFlow<Boolean> = remember { viewModel.internetConnectionState }
+                val isConnected: Boolean by internetConnectionState.collectAsState(false)
 
-                LaunchedEffect(key1 = true) {
-                    viewModel.getProductsByProductType("lipstick")
+                LaunchedEffect(isConnected) {
+                    if (isConnected) {
+                        viewModel.getProductsByProductType("lipstick")
+                    }
                 }
-                
+
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
-                    Navigation(navController = navController, viewModel = viewModel, productsList = productsList)
+                    Navigation(
+                        navController = navController,
+                        viewModel = viewModel,
+                        productsList = productsList,
+                        isConnected = isConnected
+                    )
                 }
             }
         }
@@ -74,7 +84,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel(), productsList: ProductsList?) {
+fun Navigation(
+    navController: NavHostController,
+    viewModel: MainActivityViewModel = hiltViewModel(),
+    productsList: ProductsList?, isConnected: Boolean
+) {
     NavHost(navController = navController, startDestination = "splash_screen") {
 
         composable("splash_screen") {
@@ -82,7 +96,12 @@ fun Navigation(navController: NavHostController, viewModel: MainActivityViewMode
         }
 
         composable("all_products_screen") {
-            AllProductsScreen(navController = navController, viewModel = viewModel, productsList = productsList)
+            AllProductsScreen(
+                navController = navController,
+                viewModel = viewModel,
+                productsList = productsList,
+                isConnected = isConnected
+            )
         }
     }
 }
@@ -99,7 +118,6 @@ fun ProductsListSection(
         }
     })
 }
-
 
 
 @Composable
@@ -150,21 +168,29 @@ fun ProductItem(
     modifier: Modifier = Modifier,
     productsListItem: ProductsListItem
 ) {
-    Box(modifier = modifier.wrapContentHeight(align = Alignment.Top)
-        .padding(3.dp)
-        .shadow(0.dp, RoundedCornerShape(6.dp))
-        .clip(RoundedCornerShape(6.dp))
-        .background(Color.White)
-        .clickable {
-            //TODO: navigate to product details screen
-        }.height(intrinsicSize = IntrinsicSize.Max)
+    Box(
+        modifier = modifier
+            .wrapContentHeight(align = Alignment.Top)
+            .padding(3.dp)
+            .shadow(0.dp, RoundedCornerShape(6.dp))
+            .clip(RoundedCornerShape(6.dp))
+            .background(Color.White)
+            .clickable {
+                //TODO: navigate to product details screen
+            }
+            .height(intrinsicSize = IntrinsicSize.Max)
     ) {
         //Log.i("ImageRequest", "image url: ${productsListItem.image_link}")
 
-        Column(verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-            AsyncImage(modifier = Modifier.size(150.dp).padding(1.dp),
+            AsyncImage(
+                modifier = Modifier
+                    .size(150.dp)
+                    .padding(1.dp),
                 alignment = Alignment.TopCenter,
                 placeholder = painterResource(id = R.drawable.ic_placeholder),
                 model = ImageRequest.Builder(LocalContext.current)
@@ -176,9 +202,11 @@ fun ProductItem(
                 contentScale = ContentScale.Crop
             )
 
-            Column(modifier = Modifier
-                .background(Color(192, 192, 192, 120))
-                .padding(bottom = 2.dp)) {
+            Column(
+                modifier = Modifier
+                    .background(Color(192, 192, 192, 120))
+                    .padding(bottom = 2.dp)
+            ) {
                 Text(
                     text = productsListItem.name ?: "",
                     fontSize = 14.sp,
@@ -192,8 +220,10 @@ fun ProductItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = productsListItem.category?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT)
-                    else it.toString() } ?: "",
+                    text = productsListItem.category?.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.ROOT)
+                        else it.toString()
+                    } ?: "",
                     fontSize = 12.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -204,8 +234,10 @@ fun ProductItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = productsListItem.brand?.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT)
-                    else it.toString() } ?: "",
+                    text = productsListItem.brand?.replaceFirstChar {
+                        if (it.isLowerCase()) it.titlecase(Locale.ROOT)
+                        else it.toString()
+                    } ?: "",
                     fontSize = 12.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Start,
@@ -216,7 +248,7 @@ fun ProductItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = if(productsListItem.price != null) "$${productsListItem.price}" else "",
+                    text = if (productsListItem.price != null) "$${productsListItem.price}" else "",
                     fontSize = 12.sp,
                     color = Color.Black,
                     textAlign = TextAlign.Start,

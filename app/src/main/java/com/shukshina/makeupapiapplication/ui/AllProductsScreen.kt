@@ -1,5 +1,6 @@
 package com.shukshina.makeupapiapplication.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -9,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,13 +19,12 @@ import com.shukshina.makeupapiapplication.ProductsListSection
 import com.shukshina.makeupapiapplication.SearchBar
 import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.utils.Constants
-import com.shukshina.makeupapiapplication.utils.NetworkCheckUtil
 
 @Composable
 fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel(),
-                      productsList: ProductsList?) {
+                      productsList: ProductsList?, isConnected: Boolean) {
     val searchQuery = remember { mutableStateOf("") }
-    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -33,21 +32,20 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
     ) {
 
         AllProductsTopSection(searchQuery) {
-            if(NetworkCheckUtil.hasNetwork(context)) {
+            if(isConnected) {
                 viewModel.getProductsByProductType("lipstick")
             }
         }
 
-        if(NetworkCheckUtil.hasNetwork(context)) {
-            if(productsList != null) {
-                val list = productsList
+        if (isConnected) {
+            if (productsList != null) {
                 val searchedText = searchQuery.value
                 val filteredProducts = if (searchedText.isEmpty()) {
-                    list
+                    productsList
                 } else {
                     val resultList = ProductsList()
                     if (!productsList.isEmpty()) {
-                        for (item in list) {
+                        for (item in productsList) {
                             if (item.name?.contains(searchedText, ignoreCase = true) == true
                                 || item.brand?.contains(searchedText, ignoreCase = true) == true
                                 || item.category?.contains(searchedText, ignoreCase = true) == true
@@ -58,12 +56,14 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
                     }
                     resultList
                 }
-                ProductsListSection(navController, filteredProducts)
+                if (filteredProducts.isNotEmpty()) {
+                    ProductsListSection(navController, filteredProducts)
+                } else {
+                    Log.d("TAGGER", "filteredProducts is empty")
+                    Loading()
+                }
             } else {
                 Loading()
-                LaunchedEffect(true) {
-                    viewModel.getProductsByProductType("lipstick")
-                }
             }
         } else {
             CheckInternetConnection()
