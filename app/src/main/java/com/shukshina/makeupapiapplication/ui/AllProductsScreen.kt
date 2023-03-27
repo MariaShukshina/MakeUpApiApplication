@@ -1,6 +1,5 @@
 package com.shukshina.makeupapiapplication.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -59,14 +58,13 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
                 if (filteredProducts.isNotEmpty()) {
                     ProductsListSection(navController, filteredProducts)
                 } else {
-                    Log.d("TAGGER", "filteredProducts is empty")
-                    Loading()
+                    InformationForUser("No products found")
                 }
             } else {
                 Loading()
             }
         } else {
-            CheckInternetConnection()
+            InformationForUser("Please check internet connection")
         }
     }
 }
@@ -85,7 +83,7 @@ fun Loading() {
 }
 
 @Composable
-fun CheckInternetConnection() {
+fun InformationForUser(text: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +91,7 @@ fun CheckInternetConnection() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Please check internet connection", color = MaterialTheme.colors.error)
+        Text(text = text, color = MaterialTheme.colors.error)
     }
 }
 
@@ -106,7 +104,7 @@ fun AllProductsTopSection(searchQuery: MutableState<String>, onClick: () -> Unit
         SearchBar(
             hint = "Search by name, brand or category",
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.75f)
                 .padding(10.dp),
             searchQuery = searchQuery,
         )
@@ -117,7 +115,7 @@ fun AllProductsTopSection(searchQuery: MutableState<String>, onClick: () -> Unit
                 onClick.invoke()
             },
             modifier = Modifier
-                .fillMaxWidth(0.5f)
+                .fillMaxWidth(0.4f)
         ) {
             Icon(Icons.Default.Refresh, contentDescription = "Refresh")
         }
