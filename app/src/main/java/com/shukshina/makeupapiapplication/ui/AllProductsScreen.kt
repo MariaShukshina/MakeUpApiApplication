@@ -68,35 +68,6 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
         } else {
             CheckInternetConnection()
         }
-
-/*        if (productsList != null && NetworkCheckUtil.hasNetwork(LocalContext.current)) {
-            val list = productsList
-            val searchedText = searchQuery.value
-            val filteredProducts = if (searchedText.isEmpty()) {
-                list
-            } else {
-                val resultList = ProductsList()
-                if (!productsList.isEmpty()) {
-                    for (item in list) {
-                        if (item.name?.contains(searchedText, ignoreCase = true) == true
-                            || item.brand?.contains(searchedText, ignoreCase = true) == true
-                            || item.category?.contains(searchedText, ignoreCase = true) == true
-                        ) {
-                            resultList.add(item)
-                        }
-                    }
-                }
-                resultList
-            }
-            ProductsListSection(navController, filteredProducts)
-        } else if (productsList.isNullOrEmpty() && NetworkCheckUtil.hasNetwork(LocalContext.current)) {
-            Loading()
-            LaunchedEffect(key1 = productsList) {
-                viewModel.getProductsByProductType("lipstick")
-            }
-        } else {
-            Text(text = "Please check internet connection", color = MaterialTheme.colors.error)
-        }*/
     }
 }
 
@@ -105,7 +76,9 @@ fun Loading() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp)
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator(color = Color.Red)
     }
