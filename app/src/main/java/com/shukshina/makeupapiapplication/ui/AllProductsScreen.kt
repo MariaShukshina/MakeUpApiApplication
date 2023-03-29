@@ -39,26 +39,28 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
         if (isConnected) {
             if (productsList != null) {
                 val searchedText = searchQuery.value
-                val filteredProducts = if (searchedText.isEmpty()) {
-                    productsList
-                } else {
-                    val resultList = ProductsList()
-                    if (!productsList.isEmpty()) {
-                        for (item in productsList) {
-                            if (item.name?.contains(searchedText, ignoreCase = true) == true
-                                || item.brand?.contains(searchedText, ignoreCase = true) == true
-                                || item.category?.contains(searchedText, ignoreCase = true) == true
-                            ) {
-                                resultList.add(item)
+                if(!productsList.isEmpty()) {
+                    val filteredProducts = if (searchedText.isEmpty()) {
+                        productsList
+                    } else {
+                        val resultList = ProductsList()
+                            for (item in productsList) {
+                                if (item.name?.contains(searchedText, ignoreCase = true) == true
+                                    || item.brand?.contains(searchedText, ignoreCase = true) == true
+                                    || item.category?.contains(searchedText, ignoreCase = true) == true
+                                ) {
+                                    resultList.add(item)
+                                }
                             }
-                        }
+                        resultList
                     }
-                    resultList
-                }
-                if (filteredProducts.isNotEmpty()) {
-                    ProductsListSection(navController, filteredProducts)
+                    if (filteredProducts.isNotEmpty()) {
+                        ProductsListSection(navController, filteredProducts)
+                    } else {
+                        InformationForUser("No products found")
+                    }
                 } else {
-                    InformationForUser("No products found")
+                    Loading()
                 }
             } else {
                 Loading()
