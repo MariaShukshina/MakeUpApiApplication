@@ -44,12 +44,14 @@ class MainActivityViewModel @Inject constructor(
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkCallback = object : ConnectivityManager.NetworkCallback() {
+
                 override fun onAvailable(network: Network) {
                     _internetConnectionState.value = true
                 }
 
                 override fun onLost(network: Network) {
                     _internetConnectionState.value = false
+                    _productsByProductTypeList.postValue(null)
                 }
             }
             connectivityManager.registerDefaultNetworkCallback(networkCallback)

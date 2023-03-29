@@ -78,7 +78,7 @@ fun Loading() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        CircularProgressIndicator(color = Color.Red)
+        CircularProgressIndicator(color = Color(249,116,167))
     }
 }
 
