@@ -60,13 +60,13 @@ class MainActivity : ComponentActivity() {
             MakeUpApiApplicationTheme {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
-                val productsList by viewModel.productsByProductTypeList.observeAsState()
+                val productsList by viewModel.productsList.observeAsState()
                 val internetConnectionState: StateFlow<Boolean> = remember { viewModel.internetConnectionState }
                 val isConnected: Boolean by internetConnectionState.collectAsState(false)
 
                 LaunchedEffect(isConnected) {
                     if (isConnected) {
-                        viewModel.getProductsByProductType("lipstick")
+                        viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
                     }
                 }
 

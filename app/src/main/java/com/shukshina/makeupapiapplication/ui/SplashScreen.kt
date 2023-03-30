@@ -46,8 +46,8 @@ fun SplashScreen(navController: NavHostController, viewModel: MainActivityViewMo
                 Text(text = "No internet connection", color = MaterialTheme.colors.error)
             }
 
-            LaunchedEffect(key1 = viewModel.productsByProductTypeList.value) {
-                if(!viewModel.productsByProductTypeList.value.isNullOrEmpty()) {
+            LaunchedEffect(key1 = viewModel.productsList.value) {
+                if(!viewModel.productsList.value.isNullOrEmpty()) {
                     navController.popBackStack()
                     navController.navigate("all_products_screen")
                 } else {

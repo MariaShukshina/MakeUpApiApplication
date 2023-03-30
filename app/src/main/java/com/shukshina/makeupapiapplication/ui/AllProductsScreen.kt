@@ -30,7 +30,7 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
             .padding(10.dp)
     ) {
 
-        AllProductsTopSection(searchQuery) {
+        AllProductsTopSection(searchQuery, viewModel) {
             if(isConnected) {
                 viewModel.getProductsByProductType("lipstick")
             }
@@ -98,7 +98,8 @@ fun InformationForUser(text: String) {
 }
 
 @Composable
-fun AllProductsTopSection(searchQuery: MutableState<String>, onClick: () -> Unit) {
+fun AllProductsTopSection(searchQuery: MutableState<String>, viewModel: MainActivityViewModel,
+                          onClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(Constants.productTypes[0]) }
 
@@ -140,6 +141,10 @@ fun AllProductsTopSection(searchQuery: MutableState<String>, onClick: () -> Unit
                     DropdownMenuItem(onClick = {
                         selectedItem = type
                         expanded = false
+                        when (type.id) {
+                            "All products" -> viewModel.getAllProducts()
+                            else -> viewModel.getProductsByProductType(type.id)
+                        }
                     }) {
                         Text(text = type.name)
                     }
