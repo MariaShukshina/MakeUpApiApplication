@@ -11,18 +11,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shukshina.makeupapiapplication.MainActivityViewModel
 import com.shukshina.makeupapiapplication.R
-import com.shukshina.makeupapiapplication.utils.NetworkCheckUtil
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel()) {
+fun SplashScreen(navController: NavHostController,
+                 viewModel: MainActivityViewModel, isConnected: Boolean) {
 
     Surface(color = Color.White) {
         Column(
@@ -42,7 +40,7 @@ fun SplashScreen(navController: NavHostController, viewModel: MainActivityViewMo
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            if(!NetworkCheckUtil.hasNetwork(LocalContext.current)) {
+            if(!isConnected) {
                 Text(text = "No internet connection", color = MaterialTheme.colors.error)
             }
 

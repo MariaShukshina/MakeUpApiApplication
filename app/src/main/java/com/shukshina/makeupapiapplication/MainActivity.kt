@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -61,12 +60,15 @@ class MainActivity : ComponentActivity() {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
                 val productsList by viewModel.productsList.observeAsState()
-                val internetConnectionState: StateFlow<Boolean> = remember { viewModel.internetConnectionState }
+                val internetConnectionState: StateFlow<Boolean> = remember {
+                    viewModel.internetConnectionState
+                }
                 val isConnected: Boolean by internetConnectionState.collectAsState(false)
 
                 LaunchedEffect(isConnected) {
                     if (isConnected) {
-                        viewModel.getProductByBrandAndProductType("maybelline", "lipstick")
+                        viewModel.getProductByBrandAndProductType("maybelline",
+                            "lipstick")
                     }
                 }
 
@@ -86,13 +88,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Navigation(
     navController: NavHostController,
-    viewModel: MainActivityViewModel = hiltViewModel(),
-    productsList: ProductsList?, isConnected: Boolean
+    viewModel: MainActivityViewModel,
+    productsList: ProductsList?,
+    isConnected: Boolean
 ) {
     NavHost(navController = navController, startDestination = "splash_screen") {
 
         composable("splash_screen") {
-            SplashScreen(navController = navController, viewModel = viewModel)
+            SplashScreen(
+                navController = navController,
+                viewModel = viewModel,
+                isConnected = isConnected)
         }
 
         composable("all_products_screen") {
