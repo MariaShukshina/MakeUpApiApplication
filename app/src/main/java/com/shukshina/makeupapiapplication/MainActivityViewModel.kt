@@ -30,7 +30,7 @@ class MainActivityViewModel @Inject constructor(
     private val _productById = MutableLiveData<ProductsListItem>()
     val productById = _productById
 
-    private val _internetConnectionState = MutableStateFlow(false)
+    private val _internetConnectionState = MutableStateFlow(true)
     val internetConnectionState = _internetConnectionState
 
 

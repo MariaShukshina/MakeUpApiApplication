@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                 val internetConnectionState: StateFlow<Boolean> = remember {
                     viewModel.internetConnectionState
                 }
-                val isConnected: Boolean by internetConnectionState.collectAsState(false)
+                val isConnected: Boolean by internetConnectionState.collectAsState(true)
 
                 LaunchedEffect(isConnected) {
                     if (isConnected) {
