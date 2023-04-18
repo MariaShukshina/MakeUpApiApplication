@@ -42,6 +42,8 @@ class MainActivityViewModel @Inject constructor(
 
                 override fun onAvailable(network: Network) {
                     _internetConnectionState.value = true
+                    getProductByBrandAndProductType("maybelline",
+                        "lipstick")
                 }
 
                 override fun onLost(network: Network) {

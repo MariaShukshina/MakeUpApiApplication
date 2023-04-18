@@ -99,7 +99,7 @@ fun InformationForUser(text: String) {
 
 @Composable
 fun AllProductsTopSection(searchQuery: MutableState<String>, viewModel: MainActivityViewModel,
-                          onClick: () -> Unit) {
+                          onRefreshClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf(Constants.productTypes[0]) }
 
@@ -114,9 +114,7 @@ fun AllProductsTopSection(searchQuery: MutableState<String>, viewModel: MainActi
         Spacer(modifier = Modifier.width(4.dp))
 
         IconButton(
-            onClick = {
-                onClick.invoke()
-            },
+            onClick = onRefreshClick,
             modifier = Modifier
                 .fillMaxWidth(0.4f)
         ) {

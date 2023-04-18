@@ -65,12 +65,12 @@ class MainActivity : ComponentActivity() {
                 }
                 val isConnected: Boolean by internetConnectionState.collectAsState(true)
 
-                LaunchedEffect(isConnected) {
+                /*LaunchedEffect(isConnected) {
                     if (isConnected) {
                         viewModel.getProductByBrandAndProductType("maybelline",
                             "lipstick")
                     }
-                }
+                }*/
 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
                     Navigation(
@@ -132,9 +132,6 @@ fun SearchBar(
     hint: String = "",
     searchQuery: MutableState<String>
 ) {
-    /*var text by rememberSaveable {
-        mutableStateOf("")
-    }*/
     var isHintDisplayed by remember {
         mutableStateOf(hint != "")
     }
