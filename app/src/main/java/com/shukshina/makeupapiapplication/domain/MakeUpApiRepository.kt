@@ -1,7 +1,6 @@
 package com.shukshina.makeupapiapplication.domain
 
 import com.shukshina.makeupapiapplication.response.ProductsList
-import com.shukshina.makeupapiapplication.response.ProductsListItem
 import retrofit2.Call
 
 interface MakeUpApiRepository {
@@ -9,5 +8,4 @@ interface MakeUpApiRepository {
     fun getProductsByBrand(brand: String): Call<ProductsList>
     fun getProductsByProductType(productType: String): Call<ProductsList>
     fun getProductByBrandAndProductType(brand: String, productType: String): Call<ProductsList>
-    fun getProductById(productId: String): Call<ProductsListItem>
 }

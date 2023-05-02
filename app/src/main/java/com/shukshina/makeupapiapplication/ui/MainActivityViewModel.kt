@@ -1,4 +1,4 @@
-package com.shukshina.makeupapiapplication
+package com.shukshina.makeupapiapplication.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shukshina.makeupapiapplication.domain.MakeUpApiRepository
 import com.shukshina.makeupapiapplication.response.ProductsList
-import com.shukshina.makeupapiapplication.response.ProductsListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,9 +25,6 @@ class MainActivityViewModel @Inject constructor(
 
     private val _productsList = MutableLiveData<ProductsList>()
     val productsList = _productsList
-
-    private val _productById = MutableLiveData<ProductsListItem>()
-    val productById = _productById
 
     private val _internetConnectionState = MutableStateFlow(true)
     val internetConnectionState = _internetConnectionState
@@ -89,25 +85,6 @@ class MainActivityViewModel @Inject constructor(
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
-                    t.printStackTrace()
-                }
-            })
-        }
-    }
-
-    fun getProductById(productId: String) {
-        viewModelScope.launch {
-            val call: Call<ProductsListItem> = repository.getProductById(productId)
-            call.enqueue(object : Callback<ProductsListItem> {
-                override fun onResponse(call: Call<ProductsListItem>, response: Response<ProductsListItem>) {
-                    if (response.body() == null) {
-                        _productById.postValue(null)
-                        return
-                    }
-                    _productById.postValue(response.body())
-                }
-
-                override fun onFailure(call: Call<ProductsListItem>, t: Throwable) {
                     t.printStackTrace()
                 }
             })

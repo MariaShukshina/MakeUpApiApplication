@@ -2,7 +2,6 @@ package com.shukshina.makeupapiapplication.data
 
 import com.shukshina.makeupapiapplication.domain.MakeUpApiRepository
 import com.shukshina.makeupapiapplication.response.ProductsList
-import com.shukshina.makeupapiapplication.response.ProductsListItem
 import com.shukshina.makeupapiapplication.retrofit.MakeUpApi
 import dagger.hilt.android.scopes.ActivityScoped
 import retrofit2.Call
@@ -22,9 +21,5 @@ class MakeUpApiRepositoryImpl @Inject constructor(private val api: MakeUpApi): M
 
     override fun getProductByBrandAndProductType(brand: String, productType: String): Call<ProductsList> {
         return api.getProductByBrandAndProductType(brand, productType)
-    }
-
-    override fun getProductById(productId: String): Call<ProductsListItem> {
-        return api.getProductById(productId)
     }
 }

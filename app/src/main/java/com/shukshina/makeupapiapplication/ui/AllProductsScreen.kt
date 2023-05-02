@@ -13,9 +13,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.shukshina.makeupapiapplication.MainActivityViewModel
-import com.shukshina.makeupapiapplication.ProductsListSection
-import com.shukshina.makeupapiapplication.SearchBar
 import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.utils.Constants
 

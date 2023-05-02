@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.shukshina.makeupapiapplication.MainActivityViewModel
 import com.shukshina.makeupapiapplication.R
 import kotlinx.coroutines.delay
 

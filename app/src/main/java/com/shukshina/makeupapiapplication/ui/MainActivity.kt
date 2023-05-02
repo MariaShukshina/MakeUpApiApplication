@@ -1,4 +1,4 @@
-package com.shukshina.makeupapiapplication
+package com.shukshina.makeupapiapplication.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,18 +35,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.shukshina.makeupapiapplication.R
 import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.response.ProductsListItem
-import com.shukshina.makeupapiapplication.ui.AllProductsScreen
-import com.shukshina.makeupapiapplication.ui.SplashScreen
 import com.shukshina.makeupapiapplication.ui.theme.MakeUpApiApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.util.*
 
 
@@ -98,7 +101,8 @@ fun Navigation(
             SplashScreen(
                 navController = navController,
                 viewModel = viewModel,
-                isConnected = isConnected)
+                isConnected = isConnected
+            )
         }
 
         composable("all_products_screen") {
@@ -107,6 +111,33 @@ fun Navigation(
                 viewModel = viewModel,
                 productsList = productsList,
                 isConnected = isConnected
+            )
+        }
+        composable(
+            "clicked_product_screen/{imageLink}/{productName}/{productDescription}",
+            arguments = listOf(
+                navArgument("imageLink") {
+                    type = NavType.StringType
+                },
+                navArgument("productName") {
+                    type = NavType.StringType
+                },
+                navArgument("productDescription") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val decodedImageLink =
+                URLDecoder.decode(it.arguments?.getString("imageLink") ?: "", "UTF-8")
+            val decodedProductName =
+                URLDecoder.decode(it.arguments?.getString("productName") ?: "", "UTF-8")
+            val decodedProductDescription =
+                URLDecoder.decode(it.arguments?.getString("productDescription") ?: "", "UTF-8")
+
+            ClickedProductScreen(
+                imageLink = decodedImageLink,
+                productName = decodedProductName,
+                productDescription = decodedProductDescription
             )
         }
     }
@@ -179,7 +210,12 @@ fun ProductItem(
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
             .clickable {
-                //TODO: navigate to product details screen
+                val encodedUrl = URLEncoder.encode(productsListItem.image_link, "utf-8")
+                val encodedName = URLEncoder.encode(productsListItem.name, "utf-8")
+                val encodedDescription = URLEncoder.encode(productsListItem.description, "utf-8")
+                navController.navigate(
+                    "clicked_product_screen/$encodedUrl/$encodedName/$encodedDescription"
+                )
             }
             .height(intrinsicSize = IntrinsicSize.Max)
     ) {
