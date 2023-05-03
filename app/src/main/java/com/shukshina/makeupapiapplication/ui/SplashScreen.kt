@@ -46,11 +46,11 @@ fun SplashScreen(navController: NavHostController,
             LaunchedEffect(key1 = viewModel.productsList.value) {
                 if(!viewModel.productsList.value.isNullOrEmpty()) {
                     navController.popBackStack()
-                    navController.navigate("all_products_screen")
+                    navController.navigate(ScreenList.AllProductsScreen.name)
                 } else {
                     delay(8000)
                     navController.popBackStack()
-                    navController.navigate("all_products_screen")
+                    navController.navigate(ScreenList.AllProductsScreen.name)
                 }
             }
         }

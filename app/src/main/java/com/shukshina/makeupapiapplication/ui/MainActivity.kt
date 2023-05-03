@@ -95,9 +95,9 @@ fun Navigation(
     productsList: ProductsList?,
     isConnected: Boolean
 ) {
-    NavHost(navController = navController, startDestination = "splash_screen") {
+    NavHost(navController = navController, startDestination = ScreenList.SplashScreen.name) {
 
-        composable("splash_screen") {
+        composable(ScreenList.SplashScreen.name) {
             SplashScreen(
                 navController = navController,
                 viewModel = viewModel,
@@ -105,7 +105,7 @@ fun Navigation(
             )
         }
 
-        composable("all_products_screen") {
+        composable(ScreenList.AllProductsScreen.name) {
             AllProductsScreen(
                 navController = navController,
                 viewModel = viewModel,
@@ -114,7 +114,7 @@ fun Navigation(
             )
         }
         composable(
-            "clicked_product_screen/{imageLink}/{productName}/{productDescription}",
+            "${ScreenList.ClickedProductScreen.name}/{imageLink}/{productName}/{productDescription}",
             arguments = listOf(
                 navArgument("imageLink") {
                     type = NavType.StringType
@@ -214,7 +214,7 @@ fun ProductItem(
                 val encodedName = URLEncoder.encode(productsListItem.name, "utf-8")
                 val encodedDescription = URLEncoder.encode(productsListItem.description, "utf-8")
                 navController.navigate(
-                    "clicked_product_screen/$encodedUrl/$encodedName/$encodedDescription"
+                    "${ScreenList.ClickedProductScreen.name}/$encodedUrl/$encodedName/$encodedDescription"
                 )
             }
             .height(intrinsicSize = IntrinsicSize.Max)
