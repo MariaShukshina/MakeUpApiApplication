@@ -11,13 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shukshina.makeupapiapplication.response.ProductsList
 import com.shukshina.makeupapiapplication.utils.Constants
 
 @Composable
-fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel = hiltViewModel(),
+fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityViewModel,
                       productsList: ProductsList?, isConnected: Boolean) {
     val searchQuery = remember { mutableStateOf("") }
 
@@ -52,7 +51,7 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
                         resultList
                     }
                     if (filteredProducts.isNotEmpty()) {
-                        ProductsListSection(navController, filteredProducts)
+                        ProductsListSection(navController, filteredProducts, viewModel = viewModel)
                     } else {
                         InformationForUser("No products found")
                     }

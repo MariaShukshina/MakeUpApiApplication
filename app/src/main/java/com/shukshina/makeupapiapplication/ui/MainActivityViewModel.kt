@@ -11,6 +11,9 @@ import com.shukshina.makeupapiapplication.response.ProductsList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,6 +32,8 @@ class MainActivityViewModel @Inject constructor(
     private val _internetConnectionState = MutableStateFlow(true)
     val internetConnectionState = _internetConnectionState
 
+    private val _uiState = MutableStateFlow(ProductDetailUIState())
+    val uiState: StateFlow<ProductDetailUIState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -48,6 +53,16 @@ class MainActivityViewModel @Inject constructor(
                 }
             }
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        }
+    }
+
+    fun setUIState(imageLink: String, name: String, description: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                imageLink = imageLink,
+                productName = name,
+                productDescription = description,
+            )
         }
     }
 

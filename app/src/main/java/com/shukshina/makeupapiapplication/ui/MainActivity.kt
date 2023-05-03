@@ -35,11 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.shukshina.makeupapiapplication.R
@@ -48,8 +46,6 @@ import com.shukshina.makeupapiapplication.response.ProductsListItem
 import com.shukshina.makeupapiapplication.ui.theme.MakeUpApiApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
-import java.net.URLDecoder
-import java.net.URLEncoder
 import java.util.*
 
 
@@ -67,13 +63,6 @@ class MainActivity : ComponentActivity() {
                     viewModel.internetConnectionState
                 }
                 val isConnected: Boolean by internetConnectionState.collectAsState(true)
-
-                /*LaunchedEffect(isConnected) {
-                    if (isConnected) {
-                        viewModel.getProductByBrandAndProductType("maybelline",
-                            "lipstick")
-                    }
-                }*/
 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
                     Navigation(
@@ -114,30 +103,10 @@ fun Navigation(
             )
         }
         composable(
-            "${ScreenList.ClickedProductScreen.name}/{imageLink}/{productName}/{productDescription}",
-            arguments = listOf(
-                navArgument("imageLink") {
-                    type = NavType.StringType
-                },
-                navArgument("productName") {
-                    type = NavType.StringType
-                },
-                navArgument("productDescription") {
-                    type = NavType.StringType
-                }
-            )
+            ScreenList.ClickedProductScreen.name
         ) {
-            val decodedImageLink =
-                URLDecoder.decode(it.arguments?.getString("imageLink") ?: "", "UTF-8")
-            val decodedProductName =
-                URLDecoder.decode(it.arguments?.getString("productName") ?: "", "UTF-8")
-            val decodedProductDescription =
-                URLDecoder.decode(it.arguments?.getString("productDescription") ?: "", "UTF-8")
-
             ClickedProductScreen(
-                imageLink = decodedImageLink,
-                productName = decodedProductName,
-                productDescription = decodedProductDescription
+                viewModel = viewModel
             )
         }
     }
@@ -147,11 +116,12 @@ fun Navigation(
 @Composable
 fun ProductsListSection(
     navController: NavHostController,
-    productList: List<ProductsListItem>
+    productList: List<ProductsListItem>,
+    viewModel: MainActivityViewModel
 ) {
     LazyVerticalGrid(columns = GridCells.Fixed(2), content = {
         items(productList) {
-            ProductItem(navController = navController, productsListItem = it)
+            ProductItem(navController = navController, productsListItem = it, viewModel = viewModel)
         }
     })
 }
@@ -200,8 +170,10 @@ fun SearchBar(
 fun ProductItem(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    productsListItem: ProductsListItem
+    productsListItem: ProductsListItem,
+    viewModel: MainActivityViewModel
 ) {
+
     Box(
         modifier = modifier
             .wrapContentHeight(align = Alignment.Top)
@@ -210,11 +182,13 @@ fun ProductItem(
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
             .clickable {
-                val encodedUrl = URLEncoder.encode(productsListItem.image_link, "utf-8")
-                val encodedName = URLEncoder.encode(productsListItem.name, "utf-8")
-                val encodedDescription = URLEncoder.encode(productsListItem.description, "utf-8")
+                viewModel.setUIState(
+                    productsListItem.image_link ?: "No image provided",
+                    productsListItem.name ?: "No name provided",
+                    productsListItem.description ?: "No description provided"
+                )
                 navController.navigate(
-                    "${ScreenList.ClickedProductScreen.name}/$encodedUrl/$encodedName/$encodedDescription"
+                    ScreenList.ClickedProductScreen.name
                 )
             }
             .height(intrinsicSize = IntrinsicSize.Max)

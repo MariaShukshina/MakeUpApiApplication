@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,16 +23,17 @@ import com.shukshina.makeupapiapplication.R
 
 @Composable
 fun ClickedProductScreen(
-    imageLink: String,
-    productName: String,
-    productDescription: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MainActivityViewModel
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize().background(MaterialTheme.colors.surface)
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.surface)
     ) {
+        val uiState by viewModel.uiState.collectAsState()
 
         AsyncImage(
             modifier = modifier
@@ -39,7 +42,7 @@ fun ClickedProductScreen(
             alignment = Alignment.TopCenter,
             placeholder = painterResource(id = R.drawable.ic_placeholder),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageLink)
+                .data(uiState.imageLink)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
@@ -52,7 +55,7 @@ fun ClickedProductScreen(
                 .padding(8.dp)
         ) {
             Text(
-                text = productName,
+                text = uiState.productName,
                 fontSize = 19.sp,
                 color = Color(249,116,167),
                 fontWeight = FontWeight.Bold,
@@ -62,7 +65,7 @@ fun ClickedProductScreen(
                     .padding(horizontal = 5.dp)
             )
             Text(
-                text = productDescription,
+                text = uiState.productDescription,
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.onSurface,
                 textAlign = TextAlign.Justify,
