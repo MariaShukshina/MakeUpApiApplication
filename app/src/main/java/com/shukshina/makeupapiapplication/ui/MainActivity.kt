@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 val isConnected: Boolean by internetConnectionState.collectAsState(true)
 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
-                    Navigation(
+                    MakeUpApiApp(
                         navController = navController,
                         viewModel = viewModel,
                         productsList = productsList,
@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(
+fun MakeUpApiApp(
     navController: NavHostController,
     viewModel: MainActivityViewModel,
     productsList: ProductsList?,

@@ -2,6 +2,8 @@ package com.shukshina.makeupapiapplication.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ fun ClickedProductScreen(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.surface)
+            .verticalScroll(rememberScrollState())
     ) {
         val uiState by viewModel.uiState.collectAsState()
 
