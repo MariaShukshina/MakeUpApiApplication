@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 val internetConnectionState: StateFlow<Boolean> = remember {
                     viewModel.internetConnectionState
                 }
-                val isConnected: Boolean by internetConnectionState.collectAsState(true)
+                val isConnected: Boolean by internetConnectionState.collectAsState(false)
 
                 Surface(modifier = Modifier.background(MaterialTheme.colors.surface)) {
                     MakeUpApiApp(

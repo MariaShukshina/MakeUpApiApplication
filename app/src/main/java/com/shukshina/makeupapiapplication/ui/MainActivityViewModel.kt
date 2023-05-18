@@ -29,7 +29,7 @@ class MainActivityViewModel @Inject constructor(
     private val _productsList = MutableLiveData<ProductsList>()
     val productsList = _productsList
 
-    private val _internetConnectionState = MutableStateFlow(true)
+    private val _internetConnectionState = MutableStateFlow(false)
     val internetConnectionState = _internetConnectionState
 
     private val _uiState = MutableStateFlow(ProductDetailUIState())
