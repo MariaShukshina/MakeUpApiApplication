@@ -17,7 +17,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +57,7 @@ class MainActivity : ComponentActivity() {
             MakeUpApiApplicationTheme {
                 val viewModel: MainActivityViewModel by viewModels()
                 val navController = rememberNavController()
-                val productsList by viewModel.productsList.observeAsState()
+                val productsList by viewModel.productsList.collectAsState(null)
                 val internetConnectionState: StateFlow<Boolean> = remember {
                     viewModel.internetConnectionState
                 }

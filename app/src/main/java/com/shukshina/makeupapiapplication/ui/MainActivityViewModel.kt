@@ -3,7 +3,6 @@ package com.shukshina.makeupapiapplication.ui
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shukshina.makeupapiapplication.domain.MakeUpApiRepository
@@ -26,11 +25,11 @@ class MainActivityViewModel @Inject constructor(
     private val repository: MakeUpApiRepository
 ) : ViewModel() {
 
-    private val _productsList = MutableLiveData<ProductsList>()
-    val productsList = _productsList
+    private val _productsList = MutableStateFlow<ProductsList?>(null)
+    val productsList = _productsList.asStateFlow()
 
     private val _internetConnectionState = MutableStateFlow(false)
-    val internetConnectionState = _internetConnectionState
+    val internetConnectionState = _internetConnectionState.asStateFlow()
 
     private val _uiState = MutableStateFlow(ProductDetailUIState())
     val uiState: StateFlow<ProductDetailUIState> = _uiState.asStateFlow()
@@ -49,7 +48,6 @@ class MainActivityViewModel @Inject constructor(
 
                 override fun onLost(network: Network) {
                     _internetConnectionState.value = false
-                    _productsList.postValue(null)
                 }
             }
             connectivityManager.registerDefaultNetworkCallback(networkCallback)
@@ -67,16 +65,16 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun getAllProducts() {
-        _productsList.postValue(null)
+        _productsList.value = null
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getAllProducts()
             call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
                     if (response.body() == null) {
-                        _productsList.postValue(ProductsList())
+                        _productsList.value = ProductsList()
                         return
                     }
-                    _productsList.postValue(response.body())
+                    _productsList.value = response.body()
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
@@ -87,16 +85,16 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun getProductByBrandAndProductType(brand: String, productType: String) {
-        _productsList.postValue(null)
+        _productsList.value = null
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getProductByBrandAndProductType(brand, productType)
             call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
                     if (response.body() == null) {
-                        _productsList.postValue(ProductsList())
+                        _productsList.value = ProductsList()
                         return
                     }
-                    _productsList.postValue(response.body()!!)
+                    _productsList.value = response.body()
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {
@@ -107,16 +105,16 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun getProductsByProductType(productType: String) {
-        _productsList.postValue(null)
+        _productsList.value = null
         viewModelScope.launch {
             val call: Call<ProductsList> = repository.getProductsByProductType(productType)
             call.enqueue(object : Callback<ProductsList> {
                 override fun onResponse(call: Call<ProductsList>, response: Response<ProductsList>) {
                     if (response.body() == null) {
-                        _productsList.postValue(ProductsList())
+                        _productsList.value = ProductsList()
                         return
                     }
-                    _productsList.postValue(response.body())
+                    _productsList.value = response.body()
                 }
 
                 override fun onFailure(call: Call<ProductsList>, t: Throwable) {

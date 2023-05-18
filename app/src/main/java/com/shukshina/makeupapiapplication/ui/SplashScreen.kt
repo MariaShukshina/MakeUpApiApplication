@@ -8,6 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,12 +44,12 @@ fun SplashScreen(navController: NavHostController,
                 Text(text = "No internet connection", color = MaterialTheme.colors.error)
             }
 
-            LaunchedEffect(key1 = viewModel.productsList.value) {
+            LaunchedEffect(key1 = viewModel.productsList.collectAsState().value) {
                 if(!viewModel.productsList.value.isNullOrEmpty()) {
                     navController.popBackStack()
                     navController.navigate(ScreenList.AllProductsScreen.name)
                 } else {
-                    delay(8000)
+                    delay(6000)
                     navController.popBackStack()
                     navController.navigate(ScreenList.AllProductsScreen.name)
                 }
