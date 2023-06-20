@@ -27,9 +27,7 @@ fun AllProductsScreen(navController: NavHostController, viewModel: MainActivityV
     ) {
 
         AllProductsTopSection(searchQuery, viewModel) {
-            if(isConnected) {
-                viewModel.getProductsByProductType("lipstick")
-            }
+            viewModel.getProductsByProductType("lipstick")
         }
 
         if (isConnected) {
